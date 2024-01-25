@@ -1,0 +1,23 @@
+npx sequelize model:create --name User --attributes email:string,password:string,role:string
+npx sequelize model:create --name UserProfile --attributes firstName:string,lastName:string,dateOfBirth:string,gender:string,address:text,UserId:integer
+npx sequelize model:create --name DoctorProfile --attributes firstName:string,lastName:string,photo:string,clinic:text,description:text,specialty:string
+npx sequelize model:create --name Appointment --attributes code:string,cost:integer,date:date,DoctorId:integer,UserId:integer
+
+
+migration => add UserId:integer to doctorProfile
+
+
+UserId: {
+    allowNull: false,
+    type: Sequelize.INTEGER,
+    references: {
+        model: "Users",
+    },
+}
+
+const data = require('../user-doctor.json').map((x) => {
+    delete x.id
+    x.createdAt = x.updatedAt = new Date()
+    return x
+})
+await queryInterface.bulkInsert("Users", data)
