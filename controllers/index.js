@@ -1,7 +1,6 @@
 const { Op } = require('sequelize');
 const { DoctorProfile, User, UserProfile, Appointment } = require('../models/index')
 const bcrypt = require('bcryptjs');
-const Swal = require('sweetalert2')
 
 class Controller{
     //routing DONE
@@ -194,6 +193,7 @@ class Controller{
     static async appointments(req, res){
         try {
             const {userEmail} = req.session
+            const {message} = req.query
             const {id} = await User.findOne({
                 where: {
                     email: userEmail
@@ -208,7 +208,7 @@ class Controller{
                 }
             })
             // res.send(data)
-            res.render('my_appointment', {data})
+            res.render('my_appointment', {data, message})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -219,8 +219,9 @@ class Controller{
         try {
             const {id} = req.params
             const appointment = await Appointment.findByPk(id)
+            const {code} = appointment
             appointment.destroy()
-            res.redirect('/appointments')
+            res.redirect(`/appointments?message=${code}`)
         } catch (error) {
             console.log(error);
             res.send(error.message)

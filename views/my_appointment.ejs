@@ -12,6 +12,10 @@
 <body>
     <%- include('_navbar') %>
     <div class="container mt-5">
+        
+        <% if (message) { %>
+            <p style="color: red;">appointment dengan code <%= message %> telah dihapus</p>
+        <% } %>
         <h2>Appointment List</h2>
         <table class="table table-bordered">
             <thead>
