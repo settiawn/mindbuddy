@@ -130,7 +130,7 @@ class Controller{
     //after login doctor
     static async infoDoctor(req, res){
         try {
-            res.render('doctor_details')
+            res.render('doctor_info')
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -138,4 +138,4 @@ class Controller{
     }
 }
 
-module.exports = Controller
+module.exports = Controller 

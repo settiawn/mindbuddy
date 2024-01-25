@@ -1,0 +1,46 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #007bff;
+}
+
+.doctor-details {
+    display: flex;
+    align-items: center;
+}
+
+.doctor-photo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.appointment-button {
+    background-color: #007bff;
+    border: none;
+}
+
+.appointment-button:hover {
+    background-color: #0056b3;
+}
+
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: #ffffff;
+}
