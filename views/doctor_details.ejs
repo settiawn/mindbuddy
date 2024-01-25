@@ -12,20 +12,22 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-4">
-                <img src="https://via.placeholder.com/150" alt="Doctor Photo" class="img-fluid rounded doctor-photo"> 
+                <img src="<%= data.photo %>" alt="Doctor Photo" class="img-fluid rounded doctor-photo"> 
             </div>
             <div class="col-md-8">
                 <div class="doctor-details">
                     <div>
-                        <h2>Dr. John Smith</h2>
-                        <p>Specialty: Cardiologist</p>
-                        <p>Location: XYZ Hospital</p>
-                        <p>Description: XYZ Hospital</p>
+                        <h2><%= data.fullname %></h2>
+                        <p>Specialty: <%= data.specialty %></p>
+                        <p>Location: <%= data.clinic %></p>
+                        <p>Description: <%= data.description %></p>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary mt-3 appointment-button" data-toggle="modal" data-target="#appointmentModal">
-                    Book an Appointment
-                </button>
+                <a href="/doctors/<%= data.id %>/appointment">
+                    <button type="button" class="btn btn-primary mt-3 appointment-button" data-toggle="modal" data-target="#appointmentModal">
+                        Book an Appointment
+                    </button>
+                </a>
             </div>
         </div>
     </div>

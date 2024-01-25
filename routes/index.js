@@ -57,6 +57,8 @@ router.post('/editProfile', Controller.editProfilePost);
 router.get('/appointments', Controller.appointments);
 router.get('/logout', Controller.logout);
 
+router.get('/appointments/delete/:id', Controller.deleteAppointment);
+
 //per-dokteran
 router.use('/doctors', doctorRouter);
 

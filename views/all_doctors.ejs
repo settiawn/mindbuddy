@@ -22,24 +22,25 @@
                 <tr>
                     <th>No</th>
                     <th>Photo</th>
-                    <th>Clinic</th>
                     <th>Full Name</th>
                     <th>Specialty</th>
+                    <th>Clinic</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><img src="path/to/photo.jpg" alt="Photo" class="table-img"></td>
-                    <td>Clinic Name</td>
-                    <td>John Doe</td>
-                    <td>Specialty</td>
-                    <td>
-                        <button class="btn btn-primary">Edit</button>
-                        <button class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
+                <% data.forEach((x, i) => { %>
+                    <tr>
+                        <td><%= ++i %></td>
+                        <td><img src="<%= x.photo %>" alt="Photo" class="table-img"></td>
+                        <td><%= x.fullname %></td>
+                        <td><%= x.specialty %></td>
+                        <td><%= x.clinic %></td>
+                        <td>
+                            <a href="/doctors/<%= x.id %>"><button class="btn btn-primary">Detail</button></a>
+                        </td>
+                    </tr>
+                <% }) %>
             </tbody>
         </table>
     </div>

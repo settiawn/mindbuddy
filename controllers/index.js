@@ -1,5 +1,7 @@
+const { Op } = require('sequelize');
 const { DoctorProfile, User, UserProfile, Appointment } = require('../models/index')
 const bcrypt = require('bcryptjs');
+const Swal = require('sweetalert2')
 
 class Controller{
     //routing DONE
@@ -16,7 +18,9 @@ class Controller{
     //routing DONE
     static async registerForm(req, res){
         try {
-            res.render('register')
+            const {error} = req.query
+            console.log(req.query);
+            res.render('register', {error})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -36,16 +40,21 @@ class Controller{
             })
             const {id} = user
             await UserProfile.create({firstName, lastName, dateOfBirth, gender, address, UserId: id})
-            res.redirect("/")
+            res.redirect("/login")
         } catch (error) {
-            console.log(error);
-            res.send(error.message)
+            if(error.name === 'SequelizeValidationError'){
+                const err = error.errors.map((x) => x.message)
+                res.redirect(`/register?error=${err}`)
+            }else{
+                res.send(error.message)
+            }
         }
     }
 
     static async loginForm(req, res){
         try {
-            res.render('login')
+            const {error} = req.query
+            res.render('login', {error})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -75,7 +84,7 @@ class Controller{
                     return res.redirect(`/login?error=${msg}`)
                 }
             }else{
-                msg = 'email tidak ditemukan'
+                msg = 'email salah'
                 return res.redirect(`/login?error=${msg}`)
             }
         } catch (error) {
@@ -103,6 +112,7 @@ class Controller{
                     email: userEmail
                 }
             })
+            const {message, error} = req.query
             switch(user.role){
                 case 'patient':
                     const userProfile = await UserProfile.findOne({
@@ -111,7 +121,9 @@ class Controller{
                         }
                     })
                     // res.send(userProfile)
-                    res.render('home', {userProfile})
+                    
+                    // res.send(userProfile)
+                    res.render('home', {userProfile, message})
                 break;
                 case 'doctor':
                     const profile = await DoctorProfile.findOne({
@@ -122,13 +134,8 @@ class Controller{
                             model: Appointment,
                         }
                     })
-                    const appointments = await Appointment.findAll({
-                        where: {
-                            DoctorProfileId: profile.id
-                        }
-                    })
-                    res.send(profile)
-                    // res.render('doctor_details', {profile, appointments})
+                    // res.send(profile)
+                    res.render('doctor_info', {profile, message, error})
                 break;
             }
         } catch (error) {
@@ -139,6 +146,7 @@ class Controller{
 
     static async editProfile(req, res){
         try {
+            const {error} = req.query
             const {userEmail} = req.session
             const {id} = await User.findOne({
                 where: {
@@ -150,7 +158,7 @@ class Controller{
                     UserId: id
                 }
             })
-            res.render('editProfile', {profile})
+            res.render('editProfile', {profile, error})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -174,8 +182,12 @@ class Controller{
             await UserProfile.update({firstName, lastName, address}, {where: {id: id}})
             res.redirect('/home')
         } catch (error) {
-            console.log(error);
-            res.send(error.message)
+            if(error.name === 'SequelizeValidationError'){
+                const err = error.errors.map((x) => x.message)
+                res.redirect(`/editProfile?error=${err}`)
+            }else{
+                res.send(error.message)
+            }
         }
     }
 
@@ -190,10 +202,25 @@ class Controller{
             const data = await Appointment.findAll({
                 where: {
                     UserId: id
+                },
+                include: {
+                    model: DoctorProfile
                 }
             })
-            res.send(data)
-            // res.render('my_appointment')
+            // res.send(data)
+            res.render('my_appointment', {data})
+        } catch (error) {
+            console.log(error);
+            res.send(error.message)
+        }
+    }
+
+    static async deleteAppointment(req, res){
+        try {
+            const {id} = req.params
+            const appointment = await Appointment.findByPk(id)
+            appointment.destroy()
+            res.redirect('/appointments')
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -202,9 +229,28 @@ class Controller{
 
     static async doctors(req, res){
         try {
-            const data = await DoctorProfile.findAll()
-            res.send(data)
-            // res.render('all_doctors')
+            const {search} = req.query
+
+            const options = {
+                order: [["firstName", "asc"]],
+            }
+
+            if(search){
+                options.where = {
+                    [Op.or]: [
+                        { firstName: {
+                            [Op.iLike] : `%${search}%`
+                        } },
+                        { lastName: {
+                            [Op.iLike] : `%${search}%`
+                        } }
+                    ]
+                }
+            }
+
+            const data = await DoctorProfile.findAll(options)
+            // res.send(data)
+            res.render('all_doctors', {data})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -216,8 +262,8 @@ class Controller{
         try {
             const {id} = req.params
             const data = await DoctorProfile.findOne({where: {id}})
-            res.send(data)
-            // res.render('doctor_details')
+            // res.send(data)
+            res.render('doctor_details', {data})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -226,7 +272,10 @@ class Controller{
 
     static async appointmentForm(req, res){
         try {
-            res.render('appointment_form')
+            const {error} = req.query
+            const {id} = req.params
+            const data = await DoctorProfile.findOne({where: {id}})
+            res.render('appointment_form', {data, error})
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -234,20 +283,25 @@ class Controller{
     }
 
     static async appointmentPost(req, res){
+        const {id} = req.params //id dokter
         try {
             const {date, cost} = req.body
-            const {id} = req.params //id dokter
             const {userEmail} = req.session
             const user = await User.findOne({
                 where: {
                     email: userEmail
                 }
             })
+
             await Appointment.create({date, cost, DoctorProfileId: +id, UserId: user.id})
             res.redirect('/appointments')
         } catch (error) {
-            console.log(error);
-            res.send(error.message)
+            if(error.name === 'SequelizeValidationError'){
+                const err = error.errors.map((x) => x.message)
+                res.redirect(`/doctors/${id}/appointment?error=${err}`)
+            }else{
+                res.send(error.message)
+            }
         }
     }
 }

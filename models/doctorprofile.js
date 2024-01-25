@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       DoctorProfile.hasMany(models.Appointment)
       DoctorProfile.belongsTo(models.User)
     }
+
+    get fullname(){
+      return `${this.firstName} ${this.lastName}`
+    }
   }
   DoctorProfile.init({
     firstName: DataTypes.STRING,
