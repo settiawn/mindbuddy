@@ -19,9 +19,42 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    role: DataTypes.STRING
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        notEmpty: {
+          msg: "email tidak boleh kosong"
+        },
+        notNull: {
+          msg: "email tidak boleh kosong"
+        },
+        isEmail: {
+          msg: "Harus berupa format email"
+        }
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "password tidak boleh kosong"
+        },
+        notNull: {
+          msg: "password tidak boleh kosong"
+        },
+        minimumLength() {
+          if(this.password.length < 8){
+            throw new Error("Password Harus minimal 8 karakter")
+          }
+        }
+      }
+    },
+    role: {
+      type: DataTypes.STRING,
+    }
   }, {
     sequelize,
     modelName: 'User',

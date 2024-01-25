@@ -10,31 +10,32 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Doctor's Appointment List</h2>
-
+        <% if (error) { %>
+            <p style="color: red;"><%= error %></p>
+        <% } %>
+        <h2 class="text-center mb-4">Dr. <%= profile.fullname %>'s Appointment List</h2>
+        <% if (message) { %>
+            <p style="color: blueviolet;"><%= message %></p>
+        <% } %>
+        <a href="/logout">Logout</a>
         <table class="table appointment-table">
             <thead class="thead-light">
                 <tr>
                     <th>No</th>
-                    <th>Doctor</th>
+                    <th>Appointment Code</th>
+                    <th>Cost</th>
                     <th>Date</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Dr. John Doe</td>
-                    <td>2024-02-01</td>
-                    <td>10:00 AM</td>
-                    <td class="text-success">Confirmed</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm">Edit</button>
-                        <button class="btn btn-danger btn-sm">Cancel</button>
-                    </td>
-                </tr>
+                <% profile.Appointments.forEach((x, i) => { %>
+                    <tr>
+                        <td><%= ++i %></td>
+                        <td><%= x.code %></td>
+                        <td><%= x.getConverted %></td>
+                        <td><%= x.formattedDate %></td>
+                    </tr>
+                <% }) %>
             </tbody>
         </table>
     </div>
