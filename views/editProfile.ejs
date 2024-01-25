@@ -10,11 +10,11 @@
     <p>Edit Profile</p>
     <form action="" method="post">
         <label for="">first name</label> <br>
-        <input type="text" name="firstName" id=""> <br>
+        <input type="text" name="firstName" id="" value="<%= profile.firstName %>"> <br>
         <label for="">last name</label> <br>
-        <input type="text" name="lastName" id=""> <br>
+        <input type="text" name="lastName" id="" value="<%= profile.lastName %>"> <br>
         <label for="">address</label> <br>
-        <textarea name="address" id="" cols="30" rows="10"></textarea> <br>
+        <textarea name="address" id="" cols="30" rows="10"><%= profile.address %></textarea> <br>
         <button type="submit">Edit</button>
     </form>
 </body>

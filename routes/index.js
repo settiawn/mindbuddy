@@ -18,6 +18,16 @@ router.post('/login', Controller.loginPost);
 //logout
 router.get('/login', Controller.logout);
 
+router.use((req, res, next) => {
+    const {userEmail} = req.session
+    if(!userEmail){
+        const error = 'Mohon untuk login terlebih dahulu'
+        res.redirect(`/login?error=${error}`)
+    }else{
+        next()
+    }
+})
+
 //after login user
 router.get('/home', Controller.home);
 router.get('/editProfile', Controller.editProfile);

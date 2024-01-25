@@ -24,5 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Appointment',
   });
+  Appointment.beforeCreate((x) => {
+    x.code = 'P-' + Date.parse(new Date())
+  })
   return Appointment;
 };
