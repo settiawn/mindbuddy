@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      DoctorId: {
+      DoctorProfileId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

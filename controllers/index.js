@@ -65,6 +65,8 @@ class Controller{
                 const apakahValid = bcrypt.compareSync(password, user.password) //true bisa login, false gak bisa login
                 if(apakahValid){
                     req.session.userEmail = user.email
+                    req.session.userRole = user.role
+                    console.log(req.session);
 
                     msg = 'login berhasil!'
                     return res.redirect(`/home?message=${msg}`)
@@ -83,12 +85,13 @@ class Controller{
     }
 
     static async logout(req, res){
-        try {
-            res.send("OK")
-        } catch (error) {
-            console.log(error);
-            res.send(error.message)
-        }
+        req.session.destroy((err) => {
+            if(err){
+                res.redirect(`/home?error=${err.message}`)
+            }else{
+                res.redirect('/login')
+            }
+        })
     }
 
     //after login user
@@ -102,10 +105,30 @@ class Controller{
             })
             switch(user.role){
                 case 'patient':
-                    res.render('home', {user})
+                    const userProfile = await UserProfile.findOne({
+                        where: {
+                            UserId: user.id
+                        }
+                    })
+                    // res.send(userProfile)
+                    res.render('home', {userProfile})
                 break;
                 case 'doctor':
-                    res.render('doctor_details', {user})
+                    const profile = await DoctorProfile.findOne({
+                        where: {
+                            UserId: user.id
+                        },
+                        include: {
+                            model: Appointment,
+                        }
+                    })
+                    const appointments = await Appointment.findAll({
+                        where: {
+                            DoctorProfileId: profile.id
+                        }
+                    })
+                    res.send(profile)
+                    // res.render('doctor_details', {profile, appointments})
                 break;
             }
         } catch (error) {
@@ -158,7 +181,19 @@ class Controller{
 
     static async appointments(req, res){
         try {
-            res.render('my_appointment')
+            const {userEmail} = req.session
+            const {id} = await User.findOne({
+                where: {
+                    email: userEmail
+                }
+            })
+            const data = await Appointment.findAll({
+                where: {
+                    UserId: id
+                }
+            })
+            res.send(data)
+            // res.render('my_appointment')
         } catch (error) {
             console.log(error);
             res.send(error.message)
@@ -203,39 +238,14 @@ class Controller{
             const {date, cost} = req.body
             const {id} = req.params //id dokter
             const {userEmail} = req.session
-            const profile = await User.findOne({
+            const user = await User.findOne({
                 where: {
                     email: userEmail
                 }
             })
-            const user = await UserProfile.findOne({
-                where: {
-                    UserId: profile.id
-                }
-            }) ///user.id => id user
-            // switch(cost){
-            //     case '1':
-            //         cost = 30000
-            //     break;
-            //     case '2':
-            //         cost = 60000
-            //     break;
-            //     case '3':
-            //         cost = 90000
-            //     break;
-            // }
-            await Appointment.create({date, cost, DoctorId: +id, UserId: user.id})
-            res.send("OK")
-        } catch (error) {
-            console.log(error);
-            res.send(error.message)
-        }
-    }
 
-    //after login doctor
-    static async infoDoctor(req, res){
-        try {
-            res.render('doctor_details')
+            await Appointment.create({date, cost, DoctorProfileId: +id, UserId: user.id})
+            res.redirect('/appointments')
         } catch (error) {
             console.log(error);
             res.send(error.message)
