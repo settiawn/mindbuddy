@@ -18,11 +18,26 @@ module.exports = (sequelize, DataTypes) => {
     code: DataTypes.STRING,
     cost: DataTypes.INTEGER,
     date: DataTypes.DATE,
-    DoctorId: DataTypes.INTEGER,
+    DoctorProfileId: DataTypes.INTEGER,
     UserId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Appointment',
   });
+  Appointment.beforeCreate((x) => {
+    x.code = 'P-' + Date.parse(new Date())
+
+    switch(x.cost){
+      case '1':
+        x.cost = 30000
+      break;
+      case '2':
+        x.cost = 60000
+      break;
+      case '3':
+        x.cost = 90000
+      break;
+    }
+  })
   return Appointment;
 };
