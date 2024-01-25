@@ -1,0 +1,36 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.appointment-table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.appointment-table th, .appointment-table td {
+    text-align: center;
+}
+
+.appointment-table .btn {
+    margin-right: 5px;
+}
+
+.text-success {
+    color: #28a745;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-5 {
+    margin-top: 3rem;
+}

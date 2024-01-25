@@ -5,8 +5,8 @@ const session = require('express-session')
 
 const port = 3000
 
-app.set('view engine', 'ejs')
-app.use(express.urlencoded({ extended: true }))
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
   secret: 'what try',
@@ -20,6 +20,7 @@ app.use(session({
 
 app.use(router);
 
+app.use("/", express.static("public"));
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Example app listening on port ${port}`);
+});

@@ -243,7 +243,6 @@ class Controller{
                     email: userEmail
                 }
             })
-
             await Appointment.create({date, cost, DoctorProfileId: +id, UserId: user.id})
             res.redirect('/appointments')
         } catch (error) {
@@ -253,4 +252,4 @@ class Controller{
     }
 }
 
-module.exports = Controller
+module.exports = Controller 

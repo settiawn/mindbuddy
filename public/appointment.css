@@ -1,0 +1,10 @@
+body {
+    background-image: url('./assets/login1.jpg');
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    overflow: hidden;
+}
