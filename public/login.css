@@ -1,0 +1,35 @@
+body{
+    background-color: #FDF8F6;
+}
+
+
+.picture-column {
+    background-image: url('./assets/login1.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+.login-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+}
+ 
+.mb-3 {
+    margin-top: 40px;
+}
+
+.login-heading {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 10px;
+}
+
+.btn {
+    margin-top: 10px;
+}
